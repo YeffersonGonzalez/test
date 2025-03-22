@@ -1,0 +1,26 @@
+select version();
+
+CREATE DATABASE seguridad_mysql;
+SHOW DATABASES;
+USE seguridad_mysql; 
+
+CREATE TABLE usuarios (
+ id INT AUTO_INCREMENT PRIMARY KEY,
+ nombre VARCHAR(50),
+ email VARCHAR(100),
+ password_hash VARCHAR(255)
+);
+
+CREATE USER 'adminuser'@'localhost' IDENTIFIED BY 'Admin123!';
+GRANT SELECT, INSERT, UPDATE ON seguridad_mysql.* TO 'adminuser'@'localhost';
+SHOW GRANTS FOR 'adminuser'@'localhost';
+
+-- eliminar permisos
+REVOKE INSERT, UPDATE ON seguridad_mysql.* FROM 'adminuser'@'localhost';
+-- eliminar user
+DROP USER 'adminuser'@'localhost';
+
+SELECT user, host, plugin FROM mysql.user; 
+
+INSERT INTO usuarios (nombre, email, password_hash) VALUES ('usuario1', 'usuario1@example.com', SHA2('MiClaveSegura!', 256));
+New-NetFirewallRule -DisplayName "Bloquear MySQL 3306" -Direction Inbound -Protocol TCP -LocalPort 3306 -Action Block
